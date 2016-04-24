@@ -37,6 +37,7 @@
 @property (assign, nonatomic) id<YNBarViewDelegate> barDelegate;
 
 - (UIView*)descriptLabelViewForIndex:(NSInteger)idx;
+- (void)setNeedFitBarHeight;
 - (void)reloadData;
 
 @end

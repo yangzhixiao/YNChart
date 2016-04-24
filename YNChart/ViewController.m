@@ -9,7 +9,7 @@
 #import "ViewController.h"
 #import "YNBarView.h"
 
-@interface ViewController ()<YNBarViewDelegate>
+@interface ViewController ()<YNBarViewDelegate, UIScrollViewDelegate>
 @property (strong, nonatomic) YNBarView *barView;
 @property (weak, nonatomic) UIButton *selectedBubble;
 @property (weak, nonatomic) UIButton *selectedItem;
@@ -29,7 +29,9 @@
     UIScrollView *scrollView = [[UIScrollView alloc]init];
     scrollView.frame = CGRectMake(0, 50, winSize.width, 300);
     scrollView.contentSize = CGSizeMake(100 * 12, 300);
+    scrollView.delegate = self;
     [self.view addSubview:scrollView];
+    self.scrollView = scrollView;
     
     YNBarView *barView = [[YNBarView alloc]init];
     barView.frame = CGRectMake(0, 0, 100 * 12, 300);
@@ -39,17 +41,23 @@
     self.barView.xLabelHidden = YES;
     self.barView.showBaseLine = NO;
     self.barView.backgroundColor = YNRGB(22, 169, 189);
-    self.barView.xAxisData = @[@"1月", @"2月", @"3月", @"4月", @"5月", @"6月",@"7月", @"8月", @"9月", @"10月", @"11月", @"12月"];
-    self.barView.yAxisData = @[@"100", @"800", @"300", @"600", @"500", @"1200",@"200", @"700", @"900", @"600", @"500", @"1100"];
     self.barView.barDelegate = self;
     self.barView.paddingInset = UIEdgeInsetsMake(10, 0, 40, 0);
-    self.barView.animateDuration = 5.f;
-    self.barView.barSpaceWidth = 100;
-    [self.barView reloadData];
+    self.barView.animateDuration = 2.f;
+    self.barView.barSpaceWidth = 50;
+    
+    [self btnMonthClicked:nil];
+}
+
+#pragma mark - Private Methods
+
+- (void)setupBottomView {
+    [self.bottomView removeFromSuperview];
     
     __weak ViewController *weakSelf = self;
     
     UIView *bottomView = [[UIView alloc]init];
+    bottomView.tag = 999;
     bottomView.backgroundColor = YNRGB(247, 247, 247);
     bottomView.frame = CGRectMake(0, self.barView.bounds.size.height - 30, self.barView.bounds.size.width, 30);
     [self.barView.xAxisData enumerateObjectsUsingBlock:^(NSString *text, NSUInteger idx, BOOL *stop) {
@@ -71,7 +79,12 @@
     self.bottomView = bottomView;
 }
 
+#pragma mark - Events Reponse
+
 - (void)onBottomItemTap:(UIButton*)btn {
+    if (![btn isKindOfClass:[UIButton class]]) {
+        return;
+    }
     self.selectedItem.selected = NO;
     btn.selected = YES;
     self.selectedItem = btn;
@@ -83,6 +96,9 @@
 }
 
 - (void)onBubbleTap:(UIButton*)btn {
+    if (![btn isKindOfClass:[UIButton class]]) {
+        return;
+    }
     self.selectedBubble.selected = NO;
     btn.selected = YES;
     self.selectedBubble = btn;
@@ -91,6 +107,41 @@
     UIButton *btnItem = (UIButton*)[self.bottomView viewWithTag:btn.tag-1000];
     btnItem.selected = YES;
     self.selectedItem = btnItem;
+}
+
+- (IBAction)btnYearClicked:(id)sender {
+    NSMutableArray *xLabels = [NSMutableArray array];
+    NSMutableArray *yValues = [NSMutableArray array];
+    for (NSInteger i = 0; i < 12; i++) {
+        [xLabels addObject:[NSString stringWithFormat:@"%@月", @(i+1)]];
+        [yValues addObject:[NSString stringWithFormat:@"%@", @(arc4random_uniform(1200))]];
+    }
+    
+    self.barView.xAxisData = xLabels.copy;
+    self.barView.yAxisData = yValues.copy;
+    
+    self.scrollView.contentSize = CGSizeMake(self.barView.barSpaceWidth * 12, 300);
+    self.barView.frame = CGRectMake(0, 0, self.barView.barSpaceWidth * 12, 300);
+    [self.barView reloadData];
+    [self setupBottomView];
+}
+
+- (IBAction)btnMonthClicked:(id)sender {
+    NSMutableArray *xLabels = [NSMutableArray array];
+    NSMutableArray *yValues = [NSMutableArray array];
+    for (NSInteger i = 0; i < 31; i++) {
+        [xLabels addObject:[NSString stringWithFormat:@"%@日", @(i+1)]];
+        [yValues addObject:[NSString stringWithFormat:@"%@", @(arc4random_uniform(1200))]];
+    }
+    
+    self.barView.xAxisData = xLabels.copy;
+    self.barView.yAxisData = yValues.copy;
+    
+    self.scrollView.contentSize = CGSizeMake(self.barView.barSpaceWidth * 31, 300);
+    self.barView.frame = CGRectMake(0, 0, self.barView.barSpaceWidth * 31, 300);
+    
+    [self.barView reloadData];
+    [self setupBottomView];
 }
 
 #pragma mark - BarView Delegate
@@ -113,6 +164,12 @@
 
 - (void)barView:(YNBarView *)barView didTapBarAtIndex:(NSInteger)idx {
     [self onBubbleTap:(UIButton *)[barView viewWithTag:idx + 1000]];
+}
+
+#pragma mark - UIScrollView Delegate
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [self.barView setNeedFitBarHeight];
 }
 
 - (void)didReceiveMemoryWarning {
