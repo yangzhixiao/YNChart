@@ -13,6 +13,8 @@
 @property (strong, nonatomic) YNBarView *barView;
 @end
 
+#define YNRGB(r,g,b) [UIColor colorWithRed:(r)/255.f green:(g)/255.f blue:(b)/255.f alpha:1]
+
 @implementation ViewController
 
 - (void)viewDidLoad {
@@ -24,6 +26,10 @@
     [self.view addSubview:barView];
     
     self.barView = barView;
+    self.barView.xLabelHidden = YES;
+    self.barView.backgroundColor = YNRGB(22, 169, 189);
+    self.barView.xAxisData = @[@"1月", @"2月", @"3月", @"4月", @"5月"];
+    self.barView.yAxisData = @[@"100", @"800", @"300", @"600", @"500"];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
