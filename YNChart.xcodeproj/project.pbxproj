@@ -15,6 +15,7 @@
 		3A5D73EC1CCC829A00C83F42 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3A5D73EA1CCC829A00C83F42 /* LaunchScreen.xib */; };
 		3A5D73F81CCC829B00C83F42 /* YNChartTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A5D73F71CCC829B00C83F42 /* YNChartTests.m */; };
 		3A5D74031CCC840100C83F42 /* YNBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A5D74021CCC840100C83F42 /* YNBarView.m */; };
+		3A5D74051CCCCE9A00C83F42 /* pao.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A5D74041CCCCE9A00C83F42 /* pao.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,6 +44,7 @@
 		3A5D73F71CCC829B00C83F42 /* YNChartTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YNChartTests.m; sourceTree = "<group>"; };
 		3A5D74011CCC840100C83F42 /* YNBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YNBarView.h; sourceTree = "<group>"; };
 		3A5D74021CCC840100C83F42 /* YNBarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YNBarView.m; sourceTree = "<group>"; };
+		3A5D74041CCCCE9A00C83F42 /* pao.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pao.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +103,7 @@
 		3A5D73DB1CCC829A00C83F42 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				3A5D74041CCCCE9A00C83F42 /* pao.png */,
 				3A5D73DC1CCC829A00C83F42 /* Info.plist */,
 				3A5D73DD1CCC829A00C83F42 /* main.m */,
 			);
@@ -206,6 +209,7 @@
 			files = (
 				3A5D73E71CCC829A00C83F42 /* Main.storyboard in Resources */,
 				3A5D73EC1CCC829A00C83F42 /* LaunchScreen.xib in Resources */,
+				3A5D74051CCCCE9A00C83F42 /* pao.png in Resources */,
 				3A5D73E91CCC829A00C83F42 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

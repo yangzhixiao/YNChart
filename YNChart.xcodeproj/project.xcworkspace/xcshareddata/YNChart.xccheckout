@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>00087804-5BFA-4550-8A1D-5E3F763A26E3</string>
+	<key>IDESourceControlProjectName</key>
+	<string>project</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>18CE0A72BABC34A88E8DC0984A05768F61732D28</key>
+		<string>https://github.com/yangzhixiao/YNChart.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>YNChart.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>18CE0A72BABC34A88E8DC0984A05768F61732D28</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/yangzhixiao/YNChart.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>18CE0A72BABC34A88E8DC0984A05768F61732D28</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>18CE0A72BABC34A88E8DC0984A05768F61732D28</string>
+			<key>IDESourceControlWCCName</key>
+			<string>YNChart</string>
+		</dict>
+	</array>
+</dict>
+</plist>

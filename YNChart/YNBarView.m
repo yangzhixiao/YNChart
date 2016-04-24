@@ -34,11 +34,15 @@
         self.xLabelHidden = NO;
         self.backGroundLayerHidden = NO;
         self.showBarAnimate = YES;
+        self.showBaseLine = YES;
+        self.animateDuration = 2.f;
         
         self.barLayers = @[].mutableCopy;
         self.barBgLayers = @[].mutableCopy;
         self.baseLineLayers = @[].mutableCopy;
         self.xLabelLayers = @[].mutableCopy;
+        
+        self.tag = 99999;
         
     }
     return self;
@@ -70,6 +74,14 @@
     
 }
 
+- (UIView *)descriptLabelViewForIndex:(NSInteger)idx {
+    if (self.barDelegate
+        && [self.barDelegate respondsToSelector:@selector(viewTipsForBarViewYAxisAtIndex:)]) {
+        return [self viewWithTag:1000 + idx];
+    }
+    return nil;
+}
+
 - (CGFloat)maxYFromData:(NSArray *)data {
     NSArray *tempArray = [data sortedArrayWithOptions:NSSortConcurrent usingComparator:^NSComparisonResult(NSString *obj1, NSString *obj2) {
         return [obj1 floatValue] > [obj2 floatValue];
@@ -81,7 +93,27 @@
     return ( height / maxHeight ) * ( self.bounds.size.height - self.paddingInset.top - self.paddingInset.bottom) * .9f;
 }
 
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    if (!self.barDelegate
+        || ![self.barDelegate respondsToSelector:@selector(barView:didTapBarAtIndex:)]) {
+        return;
+    }
+    CGPoint touchPoint = [[touches anyObject] locationInView:self];
+    __weak YNBarView *weakSelf = self;
+    [self.barBgLayers enumerateObjectsUsingBlock:^(CALayer *layer, NSUInteger idx, BOOL *stop) {
+        __strong YNBarView *strongSelf = weakSelf;
+        if (CGRectContainsPoint(layer.frame, touchPoint)) {
+            [self.barDelegate barView:strongSelf didTapBarAtIndex:idx];
+            *stop = YES;
+        }
+    }];
+}
+
 - (void)drawBaseLine {
+    if (!self.showBaseLine) {
+        return;
+    }
+    
     CGRect rect = self.bounds;
     //x轴
     CALayer *xAxisLine = [CALayer layer];
@@ -124,6 +156,28 @@
     [self.xLabelLayers addObject:textLayer];
 }
 
+- (void)drawDescriptionLabel {
+    if (self.barDelegate
+        && [self.barDelegate respondsToSelector:@selector(viewTipsForBarViewYAxisAtIndex:)]) {
+        for (NSInteger idx = 0; idx < self.xAxisData.count; idx ++) {
+            CGRect rect = self.bounds;
+            UIView *view = [self.barDelegate viewTipsForBarViewYAxisAtIndex:idx];
+            view.tag = 1000 + idx;
+            if ([self viewWithTag:1000 + idx]) {
+                [[self viewWithTag:1000 + idx] removeFromSuperview];
+            }
+            CGFloat yValue = [self.yAxisData[idx] floatValue];
+            CGFloat maxY = [self maxYFromData:self.yAxisData];//...
+            CGFloat centerX = self.paddingInset.left + self.barSpaceWidth * idx + self.barSpaceWidth / 2.f;
+            CGFloat barHeight = [self dynamicHeight:yValue FromMax:maxY];
+            CGFloat barMaxHeight = rect.size.height - self.paddingInset.top - self.paddingInset.bottom;
+            CGFloat centerY = barMaxHeight - barHeight - 2;
+            view.center = CGPointMake(centerX, centerY);
+            [self addSubview:view];
+        }
+    }
+}
+
 - (void)drawBarLayers {
     
     __weak YNBarView *weakSelf = self;
@@ -146,7 +200,7 @@
         }
         
         //bar background layer
-        CGRect xBarBgFrame = CGRectMake(strongSelf.paddingInset.left + self.barSpaceWidth * idx + self.barSpaceWidth / 2.f - strongSelf.barWidth / 2.f,
+        CGRect xBarBgFrame = CGRectMake(strongSelf.paddingInset.left + strongSelf.barSpaceWidth * idx + strongSelf.barSpaceWidth / 2.f - strongSelf.barWidth / 2.f,
                                         strongSelf.paddingInset.top,
                                         strongSelf.barWidth,
                                         rect.size.height-strongSelf.paddingInset.top-strongSelf.paddingInset.bottom);
@@ -157,7 +211,7 @@
             xBarBgLayer.masksToBounds = YES;
             xBarBgLayer.cornerRadius = strongSelf.barCornerRadius;
             [strongSelf.layer addSublayer:xBarBgLayer];
-            [self.barBgLayers addObject:xBarBgLayer];
+            [strongSelf.barBgLayers addObject:xBarBgLayer];
         }
         
         //bar wrap layer
@@ -178,18 +232,31 @@
         xBarLayer.cornerRadius = strongSelf.barCornerRadius;
         [xBarWrapLayer addSublayer:xBarLayer];
         
-        [self.barLayers addObject:xBarWrapLayer];
+        [strongSelf.barLayers addObject:xBarWrapLayer];
 
+        NSTimeInterval duration = strongSelf.animateDuration;
         if (strongSelf.showBarAnimate) {
             CABasicAnimation *ani = [CABasicAnimation animationWithKeyPath:@"position"];
             ani.toValue = [NSValue valueWithCGPoint:CGPointMake(0, xBarBgFrame.size.height - barHeight)];
-            ani.duration = 2.f;
+            ani.duration = duration;
             ani.removedOnCompletion = NO;
             ani.fillMode = kCAFillModeForwards;
             ani.timingFunction = [CAMediaTimingFunction functionWithName: kCAMediaTimingFunctionEaseOut];
             [xBarLayer addAnimation:ani forKey:nil];
+            
+        } else {
+            xBarLayer.position = CGPointMake(0, xBarBgFrame.size.height - barHeight);
         }
         
+        //the last one
+        if (strongSelf.showBarAnimate && idx == strongSelf.xAxisData.count - 1) {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(duration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [strongSelf drawDescriptionLabel];
+            });
+        }
+        if (!strongSelf.showBarAnimate) {
+            [strongSelf drawDescriptionLabel];
+        }
     }];
     
 }
