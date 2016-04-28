@@ -42,7 +42,7 @@
     self.barView.showBaseLine = NO;
     self.barView.backgroundColor = YNRGB(22, 169, 189);
     self.barView.barDelegate = self;
-    self.barView.paddingInset = UIEdgeInsetsMake(10, 0, 40, 0);
+    self.barView.paddingInset = UIEdgeInsetsMake(40, 0, 40, 0);
     self.barView.animateDuration = 2.f;
     self.barView.barSpaceWidth = 50;
     

@@ -52,6 +52,16 @@
     return self;
 }
 
+- (void)setXAxisData:(NSArray *)xAxisData {
+    _xAxisData = xAxisData;
+    [self removeLayers];
+}
+
+- (void)setYAxisData:(NSArray *)yAxisData {
+    _yAxisData = yAxisData;
+    [self removeLayers];
+}
+
 - (void)reloadData {
     [self removeLayers];
     [self drawBaseLine];
@@ -65,9 +75,10 @@
         [visibleYValues addObject:layer.name];//save name as yValue
     }];
     CGFloat maxHeight = [self maxYFromData:visibleYValues];
+    if (self.curMaxHeight != maxHeight) {
+        [self showFitHeightAnimate];
+    }
     self.curMaxHeight = maxHeight;
-    [self showFitHeightAnimate];
-
 }
 
 - (NSArray*)visibleBarLayers {
@@ -284,7 +295,7 @@
         [xBarWrapLayer addSublayer:xBarLayer];
         
         [strongSelf.barLayers addObject:xBarWrapLayer];
-
+        
         NSTimeInterval duration = strongSelf.animateDuration;
         if (strongSelf.showBarAnimate) {
             CABasicAnimation *ani = [CABasicAnimation animationWithKeyPath:@"position"];
@@ -305,7 +316,7 @@
                 [strongSelf drawDescriptionLabel];
             });
         }
-        if (!strongSelf.showBarAnimate) {
+        if (!strongSelf.showBarAnimate && idx == strongSelf.xAxisData.count - 1) {
             [strongSelf drawDescriptionLabel];
         }
     }];
@@ -338,7 +349,7 @@
         
         CABasicAnimation *ani2 = [CABasicAnimation animationWithKeyPath:@"bounds"];
         ani2.toValue = [NSValue valueWithCGRect:CGRectMake(0, 0, weakSelf.barWidth, barHeight)];
-
+        
         CAAnimationGroup *group = [CAAnimationGroup animation];
         group.animations = @[ani, ani2];
         group.removedOnCompletion = NO;
