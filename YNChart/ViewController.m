@@ -169,7 +169,7 @@
 #pragma mark - UIScrollView Delegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    [self.barView setNeedFitBarHeight];
+//    [self.barView setNeedFitBarHeight];
 }
 
 - (void)didReceiveMemoryWarning {

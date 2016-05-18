@@ -231,7 +231,7 @@
             CGFloat maxY = [self maxYFromData:self.yAxisData];//...
             CGFloat centerX = self.paddingInset.left + self.barSpaceWidth * idx + self.barSpaceWidth / 2.f;
             CGFloat barHeight = [self dynamicHeight:yValue FromMax:maxY];
-            CGFloat centerY = barMaxHeight - barHeight - 2;
+            CGFloat centerY = barMaxHeight - barHeight + 22;
             view.center = CGPointMake(centerX, centerY);
             [self addSubview:view];
             [self.tipViews addObject:view];
